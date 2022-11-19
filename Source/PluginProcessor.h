@@ -9,6 +9,8 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "synthesiser/SineWaveVoice.h"
+#include "synthesiser/SineWaveSound.h"
 
 //==============================================================================
 /**
@@ -56,7 +58,15 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    //==============================================================================
+    juce::MidiKeyboardState* getMidiKeyboardState();
 private:
     //==============================================================================
+    std::unique_ptr<juce::MidiKeyboardState> midiKeyboardState;
+    std::unique_ptr<juce::Synthesiser> synth;
+
+    //==============================================================================
+    void initialiseSynth();
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnvelopeDrawerAudioProcessor)
 };

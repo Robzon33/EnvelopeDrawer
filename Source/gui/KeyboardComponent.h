@@ -18,12 +18,14 @@
 class KeyboardComponent  : public juce::Component
 {
 public:
-    KeyboardComponent();
+    KeyboardComponent(juce::MidiKeyboardState&);
     ~KeyboardComponent() override;
 
     void paint (juce::Graphics&) override;
     void resized() override;
 
 private:
+    juce::MidiKeyboardComponent keyboardComponent;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeyboardComponent)
 };

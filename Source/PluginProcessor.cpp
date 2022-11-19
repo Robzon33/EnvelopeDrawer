@@ -22,6 +22,9 @@ EnvelopeDrawerAudioProcessor::EnvelopeDrawerAudioProcessor()
                        )
 #endif
 {
+    midiKeyboardState.reset(new juce::MidiKeyboardState());
+    synth.reset(new juce::Synthesiser());
+    initialiseSynth();
 }
 
 EnvelopeDrawerAudioProcessor::~EnvelopeDrawerAudioProcessor()
@@ -93,14 +96,13 @@ void EnvelopeDrawerAudioProcessor::changeProgramName (int index, const juce::Str
 //==============================================================================
 void EnvelopeDrawerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    synth->setCurrentPlaybackSampleRate(sampleRate);
+    midiKeyboardState->reset();
 }
 
 void EnvelopeDrawerAudioProcessor::releaseResources()
 {
-    // When playback stops, you can use this as an opportunity to free up any
-    // spare memory, etc.
+    midiKeyboardState->reset();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -134,6 +136,7 @@ void EnvelopeDrawerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
+    auto numSamples = buffer.getNumSamples();
 
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
@@ -144,24 +147,15 @@ void EnvelopeDrawerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
+    midiKeyboardState->processNextMidiBuffer(midiMessages, 0, numSamples, true);
 
-        // ..do something to the data...
-    }
+    synth->renderNextBlock(buffer, midiMessages, 0, numSamples);
 }
 
 //==============================================================================
 bool EnvelopeDrawerAudioProcessor::hasEditor() const
 {
-    return true; // (change this to false if you choose to not supply an editor)
+    return true;
 }
 
 juce::AudioProcessorEditor* EnvelopeDrawerAudioProcessor::createEditor()
@@ -181,6 +175,22 @@ void EnvelopeDrawerAudioProcessor::setStateInformation (const void* data, int si
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+}
+
+//==============================================================================
+juce::MidiKeyboardState* EnvelopeDrawerAudioProcessor::getMidiKeyboardState()
+{
+    return midiKeyboardState.get();
+}
+
+void EnvelopeDrawerAudioProcessor::initialiseSynth()
+{
+    auto numVoices = 20;
+    for (auto i = 0; i < numVoices; ++i)
+    {
+        synth->addVoice(new SineWaveVoice());
+    }
+    synth->addSound(new SineWaveSound());
 }
 
 //==============================================================================

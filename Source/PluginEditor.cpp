@@ -13,8 +13,11 @@
 EnvelopeDrawerAudioProcessorEditor::EnvelopeDrawerAudioProcessorEditor (EnvelopeDrawerAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
+    keyboardComponent.reset(new KeyboardComponent(*p.getMidiKeyboardState()));
+    addAndMakeVisible(keyboardComponent.get());
+    adsrComponent.reset(new ADSRComponent());
+    addAndMakeVisible(adsrComponent.get());
+
     setSize (400, 300);
 }
 
@@ -25,16 +28,12 @@ EnvelopeDrawerAudioProcessorEditor::~EnvelopeDrawerAudioProcessorEditor()
 //==============================================================================
 void EnvelopeDrawerAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-
-    g.setColour (juce::Colours::white);
-    g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void EnvelopeDrawerAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
+    auto b = getLocalBounds();
+
+    adsrComponent.get()->setBounds(b.removeFromTop(200));
+    keyboardComponent.get()->setBounds(b);
 }

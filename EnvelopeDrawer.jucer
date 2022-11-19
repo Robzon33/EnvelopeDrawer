@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="ela1T1" name="EnvelopeDrawer" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
+              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn">
   <MAINGROUP id="Jzqyk3" name="EnvelopeDrawer">
     <GROUP id="{487CA7FB-8707-909E-E101-E6D1C9902F61}" name="Source">
       <GROUP id="{78560ABF-6D54-C867-ED3E-DFB5AAA334C3}" name="synthesiser">

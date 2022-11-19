@@ -10,6 +10,8 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "gui/KeyboardComponent.h"
+#include "gui/ADSRComponent.h"
 
 //==============================================================================
 /**
@@ -28,6 +30,9 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     EnvelopeDrawerAudioProcessor& audioProcessor;
+
+    std::unique_ptr<KeyboardComponent> keyboardComponent;
+    std::unique_ptr<ADSRComponent> adsrComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnvelopeDrawerAudioProcessorEditor)
 };
