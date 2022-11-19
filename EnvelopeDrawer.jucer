@@ -4,6 +4,27 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="Jzqyk3" name="EnvelopeDrawer">
     <GROUP id="{487CA7FB-8707-909E-E101-E6D1C9902F61}" name="Source">
+      <GROUP id="{78560ABF-6D54-C867-ED3E-DFB5AAA334C3}" name="synthesiser">
+        <FILE id="tkL1d6" name="SineWaveSound.cpp" compile="1" resource="0"
+              file="Source/synthesiser/SineWaveSound.cpp"/>
+        <FILE id="xJ6Pgg" name="SineWaveSound.h" compile="0" resource="0" file="Source/synthesiser/SineWaveSound.h"/>
+        <FILE id="JnyvP8" name="SineWaveVoice.cpp" compile="1" resource="0"
+              file="Source/synthesiser/SineWaveVoice.cpp"/>
+        <FILE id="v7x1x6" name="SineWaveVoice.h" compile="0" resource="0" file="Source/synthesiser/SineWaveVoice.h"/>
+        <FILE id="efnfGz" name="SynthAudioSource.cpp" compile="1" resource="0"
+              file="Source/synthesiser/SynthAudioSource.cpp"/>
+        <FILE id="mNgqrg" name="SynthAudioSource.h" compile="0" resource="0"
+              file="Source/synthesiser/SynthAudioSource.h"/>
+      </GROUP>
+      <GROUP id="{DE4B125A-F626-775C-E909-D81076C28A40}" name="gui">
+        <FILE id="DkeKlN" name="ADSRComponent.cpp" compile="1" resource="0"
+              file="Source/gui/ADSRComponent.cpp"/>
+        <FILE id="NN7Syd" name="ADSRComponent.h" compile="0" resource="0" file="Source/gui/ADSRComponent.h"/>
+        <FILE id="cz2jEi" name="KeyboardComponent.cpp" compile="1" resource="0"
+              file="Source/gui/KeyboardComponent.cpp"/>
+        <FILE id="kLgFyI" name="KeyboardComponent.h" compile="0" resource="0"
+              file="Source/gui/KeyboardComponent.h"/>
+      </GROUP>
       <FILE id="yR5yFs" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="gSoCB5" name="PluginProcessor.h" compile="0" resource="0"
