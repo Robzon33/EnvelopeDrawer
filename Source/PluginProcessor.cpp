@@ -23,8 +23,7 @@ EnvelopeDrawerAudioProcessor::EnvelopeDrawerAudioProcessor()
 #endif
 {
     midiKeyboardState.reset(new juce::MidiKeyboardState());
-    synth.reset(new juce::Synthesiser());
-    initialiseSynth();
+    mySynth.reset(new MySynth());
 }
 
 EnvelopeDrawerAudioProcessor::~EnvelopeDrawerAudioProcessor()
@@ -96,7 +95,8 @@ void EnvelopeDrawerAudioProcessor::changeProgramName (int index, const juce::Str
 //==============================================================================
 void EnvelopeDrawerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    synth->setCurrentPlaybackSampleRate(sampleRate);
+    mySynth->setCurrentPlaybackSampleRate(sampleRate);
+    //mySynth->initAdsrParams();
     midiKeyboardState->reset();
 }
 
@@ -138,6 +138,15 @@ void EnvelopeDrawerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     auto numSamples = buffer.getNumSamples();
 
+    for (int i = 0; i < mySynth->getNumVoices(); ++i)
+    {
+        if (dynamic_cast<SineWaveVoice*>(mySynth->getVoice(i)) != nullptr)
+        {
+            dynamic_cast<SineWaveVoice*>(mySynth->getVoice(i))->setADSRSampleRate(this->getSampleRate());
+            dynamic_cast<SineWaveVoice*>(mySynth->getVoice(i))->setEnvelopeParams();
+        }
+    }
+
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
@@ -148,8 +157,7 @@ void EnvelopeDrawerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         buffer.clear (i, 0, buffer.getNumSamples());
 
     midiKeyboardState->processNextMidiBuffer(midiMessages, 0, numSamples, true);
-
-    synth->renderNextBlock(buffer, midiMessages, 0, numSamples);
+    mySynth->renderNextBlock(buffer, midiMessages, 0, numSamples);
 }
 
 //==============================================================================
@@ -181,16 +189,6 @@ void EnvelopeDrawerAudioProcessor::setStateInformation (const void* data, int si
 juce::MidiKeyboardState* EnvelopeDrawerAudioProcessor::getMidiKeyboardState()
 {
     return midiKeyboardState.get();
-}
-
-void EnvelopeDrawerAudioProcessor::initialiseSynth()
-{
-    auto numVoices = 20;
-    for (auto i = 0; i < numVoices; ++i)
-    {
-        synth->addVoice(new SineWaveVoice());
-    }
-    synth->addSound(new SineWaveSound());
 }
 
 //==============================================================================

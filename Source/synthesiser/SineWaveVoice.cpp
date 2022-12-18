@@ -21,9 +21,10 @@ bool SineWaveVoice::canPlaySound(juce::SynthesiserSound* sound)
 
 void SineWaveVoice::startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound*, int)
 {
+    adsr.noteOn();
+
     currentAngle = 0.0;
     level = velocity * 0.15;
-    tailOff = 0.0;
 
     auto cyclesPerSecond = juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber);
     auto cyclesPerSample = cyclesPerSecond / getSampleRate();
@@ -33,20 +34,7 @@ void SineWaveVoice::startNote(int midiNoteNumber, float velocity, juce::Synthesi
 
 void SineWaveVoice::stopNote(float, bool allowTailOff)
 {
-    if (allowTailOff)
-    {
-        // start a tail-off by setting this flag. The render callback will pick up on
-        // this and do a fade out, calling clearCurrentNote() when it's finished.
-
-        if (tailOff == 0.0) // we only need to begin a tail-off if it's not already doing so - the
-            tailOff = 1.0;  // stopNote method could be called more than once.
-    }
-    else
-    {
-        // we're being told to stop playing immediately, so reset everything..
-        clearCurrentNote();
-        angleDelta = 0.0;
-    }
+    adsr.noteOff();
 }
 
 void SineWaveVoice::pitchWheelMoved(int)
@@ -59,43 +47,32 @@ void SineWaveVoice::controllerMoved(int, int)
 
 void SineWaveVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
 {
-    if (angleDelta != 0.0)
+    adsr.setParameters(adsrParams);
+
+    while (--numSamples >= 0)
     {
-        if (tailOff > 0.0)
-        {
-            while (--numSamples >= 0)
-            {
-                auto currentSample = (float)(std::sin(currentAngle) * level * tailOff);
+        auto currentSample = (float)(std::sin(currentAngle) * level);
+        auto adsrCurrentSample = adsr.getNextSample();
 
-                for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
-                    outputBuffer.addSample(i, startSample, currentSample);
+        for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
+            outputBuffer.addSample(i, startSample, adsrCurrentSample * currentSample);
 
-                currentAngle += angleDelta;
-                ++startSample;
-
-                tailOff *= 0.99;
-
-                if (tailOff <= 0.005)
-                {
-                    clearCurrentNote();
-
-                    angleDelta = 0.0;
-                    break;
-                }
-            }
-        }
-        else
-        {
-            while (--numSamples >= 0)
-            {
-                auto currentSample = (float)(std::sin(currentAngle) * level);
-
-                for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
-                    outputBuffer.addSample(i, startSample, currentSample);
-
-                currentAngle += angleDelta;
-                ++startSample;
-            }
-        }
+        currentAngle += angleDelta;
+        ++startSample;
     }
+}
+
+void SineWaveVoice::setADSRSampleRate(double sampleRate)
+{
+    adsr.setSampleRate(sampleRate);
+}
+
+void SineWaveVoice::setEnvelopeParams()
+{
+    adsrParams.attack = 0.5f;
+    adsrParams.decay = 0.1f;
+    adsrParams.sustain = 1.1f;
+    adsrParams.release = 10.1f;
+
+    adsr.setParameters(adsrParams);
 }

@@ -25,10 +25,15 @@ public:
     void controllerMoved(int /*controllerNumber*/, int /*newValue*/) override;
     void renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override;
 
+    void setADSRSampleRate(double sampleRate);
+    void setEnvelopeParams();
+
     using SynthesiserVoice::renderNextBlock;
 private:
     double currentAngle = 0.0;
     double angleDelta = 0.0;
     double level = 0.0;
-    double tailOff = 0.0;
+
+    juce::ADSR adsr;
+    juce::ADSR::Parameters adsrParams;
 };

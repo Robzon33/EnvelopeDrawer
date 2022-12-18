@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "synthesiser/SineWaveVoice.h"
 #include "synthesiser/SineWaveSound.h"
+#include "synthesiser/MySynth.h"
 
 //==============================================================================
 /**
@@ -63,10 +64,8 @@ public:
 private:
     //==============================================================================
     std::unique_ptr<juce::MidiKeyboardState> midiKeyboardState;
-    std::unique_ptr<juce::Synthesiser> synth;
+    std::unique_ptr<MySynth> mySynth;
 
     //==============================================================================
-    void initialiseSynth();
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnvelopeDrawerAudioProcessor)
 };

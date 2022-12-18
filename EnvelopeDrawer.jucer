@@ -6,16 +6,14 @@
   <MAINGROUP id="Jzqyk3" name="EnvelopeDrawer">
     <GROUP id="{487CA7FB-8707-909E-E101-E6D1C9902F61}" name="Source">
       <GROUP id="{78560ABF-6D54-C867-ED3E-DFB5AAA334C3}" name="synthesiser">
+        <FILE id="yZD8y8" name="MySynth.cpp" compile="1" resource="0" file="Source/synthesiser/MySynth.cpp"/>
+        <FILE id="jsRev8" name="MySynth.h" compile="0" resource="0" file="Source/synthesiser/MySynth.h"/>
         <FILE id="tkL1d6" name="SineWaveSound.cpp" compile="1" resource="0"
               file="Source/synthesiser/SineWaveSound.cpp"/>
         <FILE id="xJ6Pgg" name="SineWaveSound.h" compile="0" resource="0" file="Source/synthesiser/SineWaveSound.h"/>
         <FILE id="JnyvP8" name="SineWaveVoice.cpp" compile="1" resource="0"
               file="Source/synthesiser/SineWaveVoice.cpp"/>
         <FILE id="v7x1x6" name="SineWaveVoice.h" compile="0" resource="0" file="Source/synthesiser/SineWaveVoice.h"/>
-        <FILE id="efnfGz" name="SynthAudioSource.cpp" compile="1" resource="0"
-              file="Source/synthesiser/SynthAudioSource.cpp"/>
-        <FILE id="mNgqrg" name="SynthAudioSource.h" compile="0" resource="0"
-              file="Source/synthesiser/SynthAudioSource.h"/>
       </GROUP>
       <GROUP id="{DE4B125A-F626-775C-E909-D81076C28A40}" name="gui">
         <FILE id="DkeKlN" name="ADSRComponent.cpp" compile="1" resource="0"
