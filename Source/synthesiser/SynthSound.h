@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    SineWaveSound.h
+    SynthSound.h
     Created: 19 Nov 2022 7:46:50pm
     Author:  Toko
 
@@ -12,10 +12,10 @@
 
 #include <JuceHeader.h>
 
-class SineWaveSound : public juce::SynthesiserSound
+class SynthSound : public juce::SynthesiserSound
 {
 public:
-    SineWaveSound();
+    SynthSound();
 
     bool appliesToNote(int /*midiNoteNumber*/) override;
     bool appliesToChannel(int /*midiChannel*/) override;

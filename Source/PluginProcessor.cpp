@@ -23,7 +23,7 @@ EnvelopeDrawerAudioProcessor::EnvelopeDrawerAudioProcessor()
 #endif
 {
     midiKeyboardState.reset(new juce::MidiKeyboardState());
-    mySynth.reset(new MySynth());
+    mySynth.reset(new Synth());
 }
 
 EnvelopeDrawerAudioProcessor::~EnvelopeDrawerAudioProcessor()
@@ -96,7 +96,6 @@ void EnvelopeDrawerAudioProcessor::changeProgramName (int index, const juce::Str
 void EnvelopeDrawerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     mySynth->setCurrentPlaybackSampleRate(sampleRate);
-    //mySynth->initAdsrParams();
     midiKeyboardState->reset();
 }
 
@@ -140,10 +139,10 @@ void EnvelopeDrawerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
 
     for (int i = 0; i < mySynth->getNumVoices(); ++i)
     {
-        if (dynamic_cast<SineWaveVoice*>(mySynth->getVoice(i)) != nullptr)
+        if (dynamic_cast<SynthVoice*>(mySynth->getVoice(i)) != nullptr)
         {
-            dynamic_cast<SineWaveVoice*>(mySynth->getVoice(i))->setADSRSampleRate(this->getSampleRate());
-            dynamic_cast<SineWaveVoice*>(mySynth->getVoice(i))->setEnvelopeParams();
+            dynamic_cast<SynthVoice*>(mySynth->getVoice(i))->setADSRSampleRate(this->getSampleRate());
+            dynamic_cast<SynthVoice*>(mySynth->getVoice(i))->setEnvelopeParams();
         }
     }
 

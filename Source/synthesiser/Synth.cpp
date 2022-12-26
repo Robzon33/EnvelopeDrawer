@@ -1,29 +1,29 @@
 /*
   ==============================================================================
 
-    MySynth.cpp
+    Synth.cpp
     Created: 14 Dec 2022 4:22:44pm
     Author:  Toko
 
   ==============================================================================
 */
 
-#include "MySynth.h"
+#include "Synth.h"
 
-MySynth::MySynth()
+Synth::Synth()
 {
     this->clearVoices();
 
     auto numVoices = 1;
     for (auto i = 0; i < numVoices; ++i)
     {
-        this->addVoice(new SineWaveVoice());
+        this->addVoice(new SynthVoice());
     }
 
     this->clearSounds();
-    this->addSound(new SineWaveSound());
+    this->addSound(new SynthSound());
 }
 
-MySynth::~MySynth()
+Synth::~Synth()
 {
 }

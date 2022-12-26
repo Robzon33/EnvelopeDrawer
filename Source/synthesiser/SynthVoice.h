@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    SineWaveVoice.h
+    SynthVoice.h
     Created: 19 Nov 2022 7:47:03pm
     Author:  Toko
 
@@ -11,12 +11,13 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "SineWaveSound.h"
+#include "SynthSound.h"
+#include "WavetableOscillator.h"
 
-class SineWaveVoice : public juce::SynthesiserVoice
+class SynthVoice : public juce::SynthesiserVoice
 {
 public:
-    SineWaveVoice();
+    SynthVoice();
 
     bool canPlaySound(juce::SynthesiserSound* sound) override;
     void startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound*, int /*currentPitchWheelPosition*/) override;
@@ -29,11 +30,20 @@ public:
     void setEnvelopeParams();
 
     using SynthesiserVoice::renderNextBlock;
+
+    void addHarmonic(int harmonic, float weight);
+    void deleteHarmonic(int index);
 private:
     double currentAngle = 0.0;
     double angleDelta = 0.0;
     double level = 0.0;
 
+    const unsigned int tableSize = 1 << 7;
+    juce::AudioSampleBuffer sineTable;
+    juce::OwnedArray<WavetableOscillator> oscillators;
+
     juce::ADSR adsr;
     juce::ADSR::Parameters adsrParams;
+
+    void createWavetable();
 };

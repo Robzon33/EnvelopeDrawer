@@ -1,25 +1,25 @@
 /*
   ==============================================================================
 
-    SineWaveSound.cpp
+    SynthSound.cpp
     Created: 19 Nov 2022 7:46:50pm
     Author:  Toko
 
   ==============================================================================
 */
 
-#include "SineWaveSound.h"
+#include "SynthSound.h"
 
-SineWaveSound::SineWaveSound()
+SynthSound::SynthSound()
 {
 }
 
-bool SineWaveSound::appliesToNote(int)
+bool SynthSound::appliesToNote(int)
 {
     return true;
 }
 
-bool SineWaveSound::appliesToChannel(int)
+bool SynthSound::appliesToChannel(int)
 {
     return true;
 }

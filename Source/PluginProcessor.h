@@ -9,9 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "synthesiser/SineWaveVoice.h"
-#include "synthesiser/SineWaveSound.h"
-#include "synthesiser/MySynth.h"
+#include "synthesiser/Synth.h"
 
 //==============================================================================
 /**
@@ -64,7 +62,7 @@ public:
 private:
     //==============================================================================
     std::unique_ptr<juce::MidiKeyboardState> midiKeyboardState;
-    std::unique_ptr<MySynth> mySynth;
+    std::unique_ptr<Synth> mySynth;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnvelopeDrawerAudioProcessor)
