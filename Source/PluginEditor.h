@@ -11,7 +11,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "gui/KeyboardComponent.h"
-#include "gui/ADSRComponent.h"
+#include "gui/MainComponent.h"
 
 //==============================================================================
 /**
@@ -32,7 +32,12 @@ private:
     EnvelopeDrawerAudioProcessor& audioProcessor;
 
     std::unique_ptr<KeyboardComponent> keyboardComponent;
-    std::unique_ptr<ADSRComponent> adsrComponent;
+
+    std::unique_ptr<MainComponent> mainComponent;
+    std::unique_ptr<juce::Viewport> viewport;
+
+    const int height = 800;
+    const int width = 800;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnvelopeDrawerAudioProcessorEditor)
 };

@@ -31,12 +31,14 @@ public:
 
     using SynthesiserVoice::renderNextBlock;
 
-    void addHarmonic(int harmonic, float weight);
-    void deleteHarmonic(int index);
+    void addHarmonic();
+    void deleteHarmonic();
+    juce::OwnedArray<WavetableOscillator>& getOscillators();
 private:
     double currentAngle = 0.0;
     double angleDelta = 0.0;
     double level = 0.0;
+    const float defaultHarmonicWeight = 0.2f;
 
     const unsigned int tableSize = 1 << 7;
     juce::AudioSampleBuffer sineTable;

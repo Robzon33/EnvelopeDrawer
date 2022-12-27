@@ -15,10 +15,15 @@ EnvelopeDrawerAudioProcessorEditor::EnvelopeDrawerAudioProcessorEditor (Envelope
 {
     keyboardComponent.reset(new KeyboardComponent(*p.getMidiKeyboardState()));
     addAndMakeVisible(keyboardComponent.get());
-    adsrComponent.reset(new ADSRComponent());
-    addAndMakeVisible(adsrComponent.get());
 
-    setSize (400, 300);
+    mainComponent.reset(new MainComponent(*p.getSynth(), width));
+    addAndMakeVisible(mainComponent.get());
+    viewport.reset(new juce::Viewport("MainComponentViewport"));
+    addAndMakeVisible(viewport.get());
+    viewport->setScrollBarsShown(true, false);
+    viewport->setViewedComponent(mainComponent.get(), false);
+
+    setSize (width, height);
 }
 
 EnvelopeDrawerAudioProcessorEditor::~EnvelopeDrawerAudioProcessorEditor()
@@ -34,6 +39,6 @@ void EnvelopeDrawerAudioProcessorEditor::resized()
 {
     auto b = getLocalBounds();
 
-    adsrComponent.get()->setBounds(b.removeFromTop(200));
-    keyboardComponent.get()->setBounds(b);
+    keyboardComponent.get()->setBounds(b.removeFromBottom(120));
+    viewport.get()->setBounds(b);
 }

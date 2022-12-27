@@ -190,6 +190,11 @@ juce::MidiKeyboardState* EnvelopeDrawerAudioProcessor::getMidiKeyboardState()
     return midiKeyboardState.get();
 }
 
+Synth* EnvelopeDrawerAudioProcessor::getSynth()
+{
+    return mySynth.get();
+}
+
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()

@@ -6,6 +6,8 @@
   <MAINGROUP id="Jzqyk3" name="EnvelopeDrawer">
     <GROUP id="{487CA7FB-8707-909E-E101-E6D1C9902F61}" name="Source">
       <GROUP id="{78560ABF-6D54-C867-ED3E-DFB5AAA334C3}" name="synthesiser">
+        <FILE id="Oq0ybs" name="Envelope.cpp" compile="1" resource="0" file="Source/synthesiser/Envelope.cpp"/>
+        <FILE id="RdQLeM" name="Envelope.h" compile="0" resource="0" file="Source/synthesiser/Envelope.h"/>
         <FILE id="KJwsiC" name="Synth.cpp" compile="1" resource="0" file="Source/synthesiser/Synth.cpp"/>
         <FILE id="WTJdHW" name="Synth.h" compile="0" resource="0" file="Source/synthesiser/Synth.h"/>
         <FILE id="Dzki28" name="SynthSound.cpp" compile="1" resource="0" file="Source/synthesiser/SynthSound.cpp"/>
@@ -21,10 +23,21 @@
         <FILE id="DkeKlN" name="ADSRComponent.cpp" compile="1" resource="0"
               file="Source/gui/ADSRComponent.cpp"/>
         <FILE id="NN7Syd" name="ADSRComponent.h" compile="0" resource="0" file="Source/gui/ADSRComponent.h"/>
+        <FILE id="bVAymk" name="EnvelopeComponent.cpp" compile="1" resource="0"
+              file="Source/gui/EnvelopeComponent.cpp"/>
+        <FILE id="dMpZfS" name="EnvelopeComponent.h" compile="0" resource="0"
+              file="Source/gui/EnvelopeComponent.h"/>
         <FILE id="cz2jEi" name="KeyboardComponent.cpp" compile="1" resource="0"
               file="Source/gui/KeyboardComponent.cpp"/>
         <FILE id="kLgFyI" name="KeyboardComponent.h" compile="0" resource="0"
               file="Source/gui/KeyboardComponent.h"/>
+        <FILE id="DZmLip" name="MainComponent.cpp" compile="1" resource="0"
+              file="Source/gui/MainComponent.cpp"/>
+        <FILE id="LGqFvw" name="MainComponent.h" compile="0" resource="0" file="Source/gui/MainComponent.h"/>
+        <FILE id="J9XUeh" name="OscillatorComponent.cpp" compile="1" resource="0"
+              file="Source/gui/OscillatorComponent.cpp"/>
+        <FILE id="tKSfkC" name="OscillatorComponent.h" compile="0" resource="0"
+              file="Source/gui/OscillatorComponent.h"/>
       </GROUP>
       <FILE id="yR5yFs" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>

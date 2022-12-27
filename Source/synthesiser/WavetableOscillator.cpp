@@ -16,6 +16,9 @@ WavetableOscillator::WavetableOscillator(const juce::AudioSampleBuffer& wavetabl
 {
     this->harmonic = harmonic;
     this->weight = weight;
+    this->pitch = 0;
+
+    envelope.reset(new Envelope());
 }
 
 WavetableOscillator::~WavetableOscillator()
@@ -25,7 +28,8 @@ WavetableOscillator::~WavetableOscillator()
 void WavetableOscillator::setFrequency(float frequency, float sampleRate)
 {
     auto tableSizeOverSampleRate = (float)tableSize / sampleRate;
-    tableDelta = frequency * harmonic * tableSizeOverSampleRate;
+    auto pitchedFrequency = frequency + (frequency * pitch / 100);
+    tableDelta = pitchedFrequency * harmonic * tableSizeOverSampleRate;
 }
 
 float WavetableOscillator::getNextSample() noexcept
@@ -45,4 +49,29 @@ float WavetableOscillator::getNextSample() noexcept
         currentIndex -= (float)tableSize;
 
     return currentSample * weight;
+}
+
+float WavetableOscillator::getPitch()
+{
+    return pitch;
+}
+
+void WavetableOscillator::setPitch(float newPitch)
+{
+    pitch = newPitch;
+}
+
+float WavetableOscillator::getWeight()
+{
+    return weight;
+}
+
+void WavetableOscillator::setWeight(float newWeight)
+{
+    weight = newWeight;
+}
+
+Envelope& WavetableOscillator::getEnvelope()
+{
+    return *envelope;
 }

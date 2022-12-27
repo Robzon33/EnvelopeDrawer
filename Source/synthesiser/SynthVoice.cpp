@@ -82,14 +82,21 @@ void SynthVoice::setEnvelopeParams()
     adsr.setParameters(adsrParams);
 }
 
-void SynthVoice::addHarmonic(int harmonic, float weight)
+void SynthVoice::addHarmonic()
 {
-    oscillators.add(new WavetableOscillator(sineTable, harmonic, weight));
+    auto harmonic = oscillators.size() + 1;
+    oscillators.add(new WavetableOscillator(sineTable, harmonic, defaultHarmonicWeight));
 }
 
-void SynthVoice::deleteHarmonic(int index)
+void SynthVoice::deleteHarmonic()
 {
-    oscillators.remove(index, true);
+	if (oscillators.size() > 0)
+		oscillators.removeLast();
+}
+
+juce::OwnedArray<WavetableOscillator>& SynthVoice::getOscillators()
+{
+    return oscillators;
 }
 
 void SynthVoice::createWavetable()

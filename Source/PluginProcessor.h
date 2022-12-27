@@ -59,6 +59,8 @@ public:
 
     //==============================================================================
     juce::MidiKeyboardState* getMidiKeyboardState();
+
+    Synth* getSynth();
 private:
     //==============================================================================
     std::unique_ptr<juce::MidiKeyboardState> midiKeyboardState;
