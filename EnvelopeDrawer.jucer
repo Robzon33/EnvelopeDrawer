@@ -20,9 +20,6 @@
               file="Source/synthesiser/WavetableOscillator.h"/>
       </GROUP>
       <GROUP id="{DE4B125A-F626-775C-E909-D81076C28A40}" name="gui">
-        <FILE id="DkeKlN" name="ADSRComponent.cpp" compile="1" resource="0"
-              file="Source/gui/ADSRComponent.cpp"/>
-        <FILE id="NN7Syd" name="ADSRComponent.h" compile="0" resource="0" file="Source/gui/ADSRComponent.h"/>
         <FILE id="bVAymk" name="EnvelopeComponent.cpp" compile="1" resource="0"
               file="Source/gui/EnvelopeComponent.cpp"/>
         <FILE id="dMpZfS" name="EnvelopeComponent.h" compile="0" resource="0"
