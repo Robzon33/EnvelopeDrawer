@@ -139,6 +139,7 @@ void EnvelopeDrawerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
 
     for (int i = 0; i < mySynth->getNumVoices(); ++i)
     {
+        // This is not nice!!!
         if (dynamic_cast<SynthVoice*>(mySynth->getVoice(i)) != nullptr)
         {
             dynamic_cast<SynthVoice*>(mySynth->getVoice(i))->setADSRSampleRate(this->getSampleRate());

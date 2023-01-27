@@ -34,6 +34,7 @@ private:
     std::unique_ptr<juce::Slider> pitchSlider;
     std::unique_ptr<juce::Slider> weightSlider;
     std::unique_ptr<juce::Slider> durationSlider;
+    std::unique_ptr<juce::Slider> sustainPosSlider;
 
     std::unique_ptr<EnvelopeComponent> envelopeComponent;
 

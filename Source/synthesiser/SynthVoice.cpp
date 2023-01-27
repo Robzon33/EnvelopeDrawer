@@ -30,12 +30,19 @@ void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::Synthesiser
     {
         auto* oscillator = oscillators.getUnchecked(oscillatorIndex);
         oscillator->setFrequency(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber), getSampleRate());
+        oscillator->getEnvelope ().noteOn ();
     }
 }
 
 void SynthVoice::stopNote(float, bool allowTailOff)
 {
     adsr.noteOff();
+
+    for (auto oscillatorIndex = 0; oscillatorIndex < oscillators.size (); ++oscillatorIndex)
+    {
+        auto* oscillator = oscillators.getUnchecked (oscillatorIndex);
+        oscillator->getEnvelope ().noteOff ();
+    }
 }
 
 void SynthVoice::pitchWheelMoved(int)
@@ -58,10 +65,15 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         {
             auto* oscillator = oscillators.getUnchecked(oscillatorIndex);
             currentSample += oscillator->getNextSample();
+            auto currentEnvelopeSample = oscillator->getEnvelope ().getNextSample ();
+            currentSample *= currentEnvelopeSample;
         }
 
-        for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
-            outputBuffer.addSample(i, startSample, currentSample * adsr.getNextSample());
+        for (auto i = outputBuffer.getNumChannels (); --i >= 0;)
+        {
+            outputBuffer.addSample (i, startSample, currentSample);
+        }
+            //outputBuffer.addSample(i, startSample, currentSample * adsr.getNextSample());
 
         ++startSample;
     }
@@ -70,6 +82,12 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
 void SynthVoice::setADSRSampleRate(double sampleRate)
 {
     adsr.setSampleRate(sampleRate);
+
+    for (auto oscillatorIndex = 0; oscillatorIndex < oscillators.size (); ++oscillatorIndex)
+    {
+        auto* oscillator = oscillators.getUnchecked (oscillatorIndex);
+        oscillator->getEnvelope ().setSampleRate (sampleRate);
+    }
 }
 
 void SynthVoice::setEnvelopeParams()

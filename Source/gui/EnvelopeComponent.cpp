@@ -23,11 +23,11 @@ EnvelopeComponent::~EnvelopeComponent()
 
 void EnvelopeComponent::paint (juce::Graphics& g)
 {
-    g.setColour(juce::Colours::grey);
-    g.drawRect(getLocalBounds(), 1);
+    g.setColour (juce::Colours::grey);
+    g.drawRect (getLocalBounds (), 1);
 
-    for (auto i = 1; i < getWidth() / 50; ++i)
-        g.drawVerticalLine(i * 100, 0, getHeight());
+    for (auto i = 1; i < getWidth () / 50; ++i)
+        g.drawVerticalLine (i * 100, 0, getHeight ());
 
     g.setColour (juce::Colours::green);
     int prevX = -1;
@@ -39,13 +39,16 @@ void EnvelopeComponent::paint (juce::Graphics& g)
             g.drawLine (prevX, prevY, point->getX (), getHeight () - point->getY (), 1);
         }
         g.fillRoundedRectangle (point->getX () - (pointDiameterInPixels / 2),
-                                (getHeight() - point->getY ()) - (pointDiameterInPixels / 2),
+                                (getHeight () - point->getY ()) - (pointDiameterInPixels / 2),
                                 pointDiameterInPixels,
                                 pointDiameterInPixels,
                                 1.5f);
         prevX = point->getX ();
         prevY = getHeight () - point->getY ();
     }
+
+    juce::Line<float> line (envelope.getSustainPos (), 0, envelope.getSustainPos (), getHeight ());
+    g.drawLine (line);
 
     g.setColour (juce::Colours::black.withAlpha (0.2f));
     g.fillRect (envelope.getDuration () * 50, 
