@@ -97,6 +97,14 @@ void EnvelopeDrawerAudioProcessor::prepareToPlay (double sampleRate, int samples
 {
     mySynth->setCurrentPlaybackSampleRate(sampleRate);
     midiKeyboardState->reset();
+
+    for (int i = 0; i < mySynth->getNumVoices(); ++i)
+    {
+        if (dynamic_cast<SynthVoice*>(mySynth->getVoice(i)) != nullptr)
+        {
+            dynamic_cast<SynthVoice*>(mySynth->getVoice(i))->setSampleRate(this->getSampleRate());
+        }
+    }
 }
 
 void EnvelopeDrawerAudioProcessor::releaseResources()
@@ -136,16 +144,6 @@ void EnvelopeDrawerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     auto numSamples = buffer.getNumSamples();
-
-    for (int i = 0; i < mySynth->getNumVoices(); ++i)
-    {
-        // This is not nice!!!
-        if (dynamic_cast<SynthVoice*>(mySynth->getVoice(i)) != nullptr)
-        {
-            dynamic_cast<SynthVoice*>(mySynth->getVoice(i))->setADSRSampleRate(this->getSampleRate());
-            dynamic_cast<SynthVoice*>(mySynth->getVoice(i))->setEnvelopeParams();
-        }
-    }
 
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't

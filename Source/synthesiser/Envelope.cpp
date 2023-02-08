@@ -11,11 +11,11 @@
 #include "Envelope.h"
 
 
-Envelope::Envelope ()
+Envelope::Envelope (double sampleRate)
 {
-	duration = 10;
-	sampleRate = 44100;
-	sustainPos = 150;
+	this->duration = 10;
+	this->sampleRate = sampleRate;
+	this->sustainPos = 150;
 
 	pointVector.insert (0, new juce::Point<int> (0, 0));
 	pointVector.insert (2, new juce::Point<int> (500, 0));
@@ -42,8 +42,17 @@ float Envelope::getNextSample () noexcept
 		case State::running:
 		{
 			currentPosInSec += (1 / sampleRate);
-			currentPosInPix = juce::roundToInt(currentPosInSec);
-			envelopeVal = getEnvelopeValue (currentPosInPix);
+			currentPosInPix = currentPosInSec * 50;
+			if (currentPosInPix >= sustainPos)
+			{
+				state = State::sustain;
+			}
+			else
+			{
+				if (currentPosInPix == 10)
+					int a = 5;
+				envelopeVal = getEnvelopeValue (currentPosInPix);
+			}
 			break;
 		}
 		case State::sustain:
@@ -54,13 +63,20 @@ float Envelope::getNextSample () noexcept
 		case State::release:
 		{
 			currentPosInSec += (1 / sampleRate);
-			currentPosInPix = juce::roundToInt (currentPosInSec);
-			envelopeVal = getEnvelopeValue (currentPosInPix);
+			if (currentPosInSec >= duration)
+			{
+				reset ();
+			}
+			else
+			{
+				currentPosInPix = currentPosInSec * 50;
+				envelopeVal = getEnvelopeValue (currentPosInPix);
+			}
 			break;
 		}
 	}
 
-	jassert (envelopeVal <= 1.0f);
+	jassert (envelopeVal >= 0.0f && envelopeVal <= 1.0f);
 
 	return envelopeVal;
 }
@@ -130,6 +146,11 @@ int Envelope::getIndexOfPoint (int x, int y)
 		}
 	}
 	return -1;
+}
+
+int Envelope::getCurrentPosInPix ()
+{
+	return currentPosInPix;
 }
 
 void Envelope::reset () noexcept

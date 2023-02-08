@@ -10,26 +10,34 @@
 
 #include "WavetableOscillator.h"
 
-WavetableOscillator::WavetableOscillator(const juce::AudioSampleBuffer& wavetableToUse, int harmonic, float weight)
+WavetableOscillator::WavetableOscillator(const juce::AudioSampleBuffer& wavetableToUse, int harmonic, float weight, double sampleRate)
       : wavetable(wavetableToUse),
         tableSize(wavetable.getNumSamples() - 1)
 {
     this->harmonic = harmonic;
     this->weight = weight;
     this->pitch = 0;
+    this->sampleRate = sampleRate;
+    this->frequency = 0;
 
-    envelope.reset(new Envelope());
+    envelope.reset(new Envelope(sampleRate));
 }
 
 WavetableOscillator::~WavetableOscillator()
 {
 }
 
-void WavetableOscillator::setFrequency(float frequency, float sampleRate)
+void WavetableOscillator::setFrequency(double newFrequency)
 {
-    auto tableSizeOverSampleRate = (float)tableSize / sampleRate;
-    auto pitchedFrequency = frequency + (frequency * pitch / 100);
-    tableDelta = pitchedFrequency * harmonic * tableSizeOverSampleRate;
+    frequency = newFrequency;
+    updateTableDelta ();
+}
+
+void WavetableOscillator::setSampleRate (double newSampleRate)
+{
+    sampleRate = newSampleRate;
+    updateTableDelta ();
+    envelope.get ()->setSampleRate (sampleRate);
 }
 
 float WavetableOscillator::getNextSample() noexcept
@@ -48,7 +56,15 @@ float WavetableOscillator::getNextSample() noexcept
     if ((currentIndex += tableDelta) > (float)tableSize)
         currentIndex -= (float)tableSize;
 
-    return currentSample * weight;
+    currentSample *= weight;
+
+    currentSample /= harmonic;
+
+    auto envelopeValue = envelope->getNextSample ();
+
+    currentSample *= envelopeValue;
+
+    return currentSample;
 }
 
 float WavetableOscillator::getPitch()
@@ -74,4 +90,11 @@ void WavetableOscillator::setWeight(float newWeight)
 Envelope& WavetableOscillator::getEnvelope()
 {
     return *envelope;
+}
+
+void WavetableOscillator::updateTableDelta ()
+{
+    auto tableSizeOverSampleRate = (float) tableSize / sampleRate;
+    auto pitchedFrequency = frequency + (frequency * pitch / 100);
+    tableDelta = pitchedFrequency * harmonic * tableSizeOverSampleRate;
 }

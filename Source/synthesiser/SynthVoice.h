@@ -26,8 +26,7 @@ public:
     void controllerMoved(int /*controllerNumber*/, int /*newValue*/) override;
     void renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override;
 
-    void setADSRSampleRate(double sampleRate);
-    void setEnvelopeParams();
+    void setSampleRate(double newSampleRate);
 
     using SynthesiserVoice::renderNextBlock;
 
@@ -43,9 +42,6 @@ private:
     const unsigned int tableSize = 1 << 7;
     juce::AudioSampleBuffer sineTable;
     juce::OwnedArray<WavetableOscillator> oscillators;
-
-    juce::ADSR adsr;
-    juce::ADSR::Parameters adsrParams;
 
     void createWavetable();
 };

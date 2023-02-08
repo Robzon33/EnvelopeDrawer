@@ -16,10 +16,11 @@
 class WavetableOscillator
 {
 public:
-    WavetableOscillator(const juce::AudioSampleBuffer& wavetableToUse, int harmonic, float weight);
+    WavetableOscillator(const juce::AudioSampleBuffer& wavetableToUse, int harmonic, float weight, double sampleRate);
     ~WavetableOscillator();
 
-    void setFrequency(float frequency, float sampleRate);
+    void setFrequency(double newFrequency);
+    void setSampleRate (double newSampleRate);
     float getNextSample() noexcept;
 
     float getPitch();
@@ -35,5 +36,9 @@ private:
     int harmonic;
     float pitch;
     float weight;
+    double sampleRate;
+    double frequency;
     std::unique_ptr<Envelope> envelope;
+
+    void updateTableDelta ();
 };

@@ -14,7 +14,7 @@ SynthVoice::SynthVoice()
 {
     createWavetable();
 
-    oscillators.add(new WavetableOscillator(sineTable, 1, 0.5f));
+    oscillators.add(new WavetableOscillator(sineTable, 1, 0.5f, getSampleRate ()));
 }
 
 bool SynthVoice::canPlaySound(juce::SynthesiserSound* sound)
@@ -24,20 +24,17 @@ bool SynthVoice::canPlaySound(juce::SynthesiserSound* sound)
 
 void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound*, int)
 {
-    adsr.noteOn();
-
     for (auto oscillatorIndex = 0; oscillatorIndex < oscillators.size(); ++oscillatorIndex)
     {
         auto* oscillator = oscillators.getUnchecked(oscillatorIndex);
-        oscillator->setFrequency(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber), getSampleRate());
+        auto frequency = juce::MidiMessage::getMidiNoteInHertz (midiNoteNumber);
+        oscillator->setFrequency (frequency);
         oscillator->getEnvelope ().noteOn ();
     }
 }
 
 void SynthVoice::stopNote(float, bool allowTailOff)
 {
-    adsr.noteOff();
-
     for (auto oscillatorIndex = 0; oscillatorIndex < oscillators.size (); ++oscillatorIndex)
     {
         auto* oscillator = oscillators.getUnchecked (oscillatorIndex);
@@ -55,8 +52,6 @@ void SynthVoice::controllerMoved(int, int)
 
 void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
 {
-    adsr.setParameters(adsrParams);
-
     while (--numSamples >= 0)
     {
         auto currentSample = 0.0f;
@@ -65,45 +60,30 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
         {
             auto* oscillator = oscillators.getUnchecked(oscillatorIndex);
             currentSample += oscillator->getNextSample();
-            auto currentEnvelopeSample = oscillator->getEnvelope ().getNextSample ();
-            currentSample *= currentEnvelopeSample;
         }
 
         for (auto i = outputBuffer.getNumChannels (); --i >= 0;)
         {
             outputBuffer.addSample (i, startSample, currentSample);
         }
-            //outputBuffer.addSample(i, startSample, currentSample * adsr.getNextSample());
 
         ++startSample;
     }
 }
 
-void SynthVoice::setADSRSampleRate(double sampleRate)
+void SynthVoice::setSampleRate(double newSampleRate)
 {
-    adsr.setSampleRate(sampleRate);
-
     for (auto oscillatorIndex = 0; oscillatorIndex < oscillators.size (); ++oscillatorIndex)
     {
         auto* oscillator = oscillators.getUnchecked (oscillatorIndex);
-        oscillator->getEnvelope ().setSampleRate (sampleRate);
+        oscillator->getEnvelope ().setSampleRate (newSampleRate);
     }
-}
-
-void SynthVoice::setEnvelopeParams()
-{
-    adsrParams.attack = 2.5f;
-    adsrParams.decay = 0.1f;
-    adsrParams.sustain = 1.1f;
-    adsrParams.release = 10.1f;
-
-    adsr.setParameters(adsrParams);
 }
 
 void SynthVoice::addHarmonic()
 {
     auto harmonic = oscillators.size() + 1;
-    oscillators.add(new WavetableOscillator(sineTable, harmonic, defaultHarmonicWeight));
+    oscillators.add(new WavetableOscillator(sineTable, harmonic, defaultHarmonicWeight, getSampleRate()));
 }
 
 void SynthVoice::deleteHarmonic()

@@ -15,7 +15,7 @@
 class Envelope
 {
 public:
-    Envelope();
+    Envelope(double sampleRate);
     ~Envelope();
 
     void setSampleRate(double newSampleRate) noexcept;
@@ -30,6 +30,7 @@ public:
     void deletePoint(int index);
     juce::OwnedArray<juce::Point<int>>& getPointVector();
     int getIndexOfPoint(int x, int y);
+    int getCurrentPosInPix ();
 
     void reset() noexcept;
     void noteOn() noexcept;

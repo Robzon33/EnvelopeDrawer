@@ -15,6 +15,7 @@
 EnvelopeComponent::EnvelopeComponent(Envelope& e)
     : envelope(e)
 {
+    startTimer (50);
 }
 
 EnvelopeComponent::~EnvelopeComponent()
@@ -55,6 +56,9 @@ void EnvelopeComponent::paint (juce::Graphics& g)
                 0, 
                 getWidth () - (envelope.getDuration () * 50), 
                 getHeight ());
+
+    g.setColour (juce::Colours::red);
+    g.drawVerticalLine (envelope.getCurrentPosInPix (), 0, getHeight ());
 }
 
 void EnvelopeComponent::mouseDown(const juce::MouseEvent& event)
@@ -75,5 +79,10 @@ void EnvelopeComponent::mouseDown(const juce::MouseEvent& event)
         }
     }
 
+    repaint ();
+}
+
+void EnvelopeComponent::timerCallback ()
+{
     repaint ();
 }

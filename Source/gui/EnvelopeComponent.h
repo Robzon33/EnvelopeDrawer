@@ -16,7 +16,7 @@
 //==============================================================================
 /*
 */
-class EnvelopeComponent  : public juce::Component
+class EnvelopeComponent  : public juce::Component, public juce::Timer
 {
 public:
     EnvelopeComponent(Envelope& e);
@@ -24,6 +24,8 @@ public:
 
     void paint (juce::Graphics&) override;
     void mouseDown(const juce::MouseEvent& event) override;
+
+    void timerCallback () override;
 private:
     Envelope& envelope;
     const int pointDiameterInPixels = 4;
