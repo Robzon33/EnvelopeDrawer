@@ -210,7 +210,6 @@ float Envelope::getEnvelopeValue (int x)
 	// convert envelope value from pixel to float value between 0 and 1
 	envelopeValue /= 100.0f;
 
-	//jassert (envelopeValue == -1.0f || envelopeValue > 1.0f);
 	jassert (envelopeValue >= 0.0f && envelopeValue <= 1.0f);
 	
 	return envelopeValue;
