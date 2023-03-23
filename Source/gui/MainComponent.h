@@ -33,12 +33,14 @@ private:
     juce::OwnedArray<OscillatorComponent> oscComponents;
     std::unique_ptr<juce::TextButton> addOscButton;
     std::unique_ptr<juce::TextButton> deleteOscButton;
+    std::unique_ptr<juce::ToggleButton> syncToggleButton;
     const int buttonsHeight = 25;
     const int oscComponentHeight = 150;
 
     void loadData();
     void addNewOscillatorComponent(WavetableOscillator* oscillator);
     int getNewComponentHeight();
+    void syncWithMain ();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

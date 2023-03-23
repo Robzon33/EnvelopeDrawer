@@ -135,6 +135,12 @@ juce::OwnedArray<juce::Point<int>>& Envelope::getPointVector ()
 	return pointVector;
 }
 
+void Envelope::setPointVector (juce::OwnedArray<juce::Point<int>>& newPointVector)
+{
+	pointVector.clear ();
+	pointVector.addCopiesOf (newPointVector);
+}
+
 int Envelope::getIndexOfPoint (int x, int y)
 {
 	for (int i = 0; i < this->pointVector.size (); i++)

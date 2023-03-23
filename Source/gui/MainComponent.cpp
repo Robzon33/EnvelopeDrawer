@@ -23,6 +23,10 @@ MainComponent::MainComponent(Synth& s, int width)
     deleteOscButton->addListener(this);
     addAndMakeVisible(deleteOscButton.get());
 
+    syncToggleButton.reset (new juce::ToggleButton ("Sync"));
+    syncToggleButton->addListener (this);
+    addAndMakeVisible (syncToggleButton.get ());
+
     setSize(width, 300);
     loadData();
 }
@@ -43,6 +47,7 @@ void MainComponent::resized()
     auto buttonArea = b.removeFromTop(buttonsHeight);
     addOscButton->setBounds(buttonArea.removeFromLeft(40).reduced(3));
     deleteOscButton->setBounds(buttonArea.removeFromLeft(40).reduced(3));
+    syncToggleButton->setBounds (buttonArea.removeFromRight (100).reduced (3));
 
     for (auto i = 0; i < oscComponents.size(); ++i)
     {
@@ -66,10 +71,14 @@ void MainComponent::buttonClicked(juce::Button* button)
     {
         synthVoice->deleteHarmonic();
 
-		if (oscComponents.size() > 0)
+		if (oscComponents.size() > 1)
 			oscComponents.removeLast();
 
         setSize(getWidth(), getNewComponentHeight());
+    }
+    if (button == syncToggleButton.get ())
+    {
+        syncWithMain ();
     }
 }
 
@@ -102,4 +111,21 @@ void MainComponent::addNewOscillatorComponent(WavetableOscillator* oscillator)
 int MainComponent::getNewComponentHeight()
 {
     return oscComponents.size() * oscComponentHeight + buttonsHeight;
+}
+
+void MainComponent::syncWithMain ()
+{
+    auto* synthVoice = dynamic_cast<SynthVoice*>(synth.getVoice (0));
+
+    auto& oscillators = synthVoice->getOscillators ();
+
+    auto firstOsc = oscillators.getUnchecked (0);
+
+    auto& envelopePointsToCopy = firstOsc->getEnvelope ().getPointVector ();
+
+    for (auto oscillatorIndex = 1; oscillatorIndex < oscillators.size (); ++oscillatorIndex)
+    {
+        auto oscillator = oscillators.getUnchecked (oscillatorIndex);
+        oscillator->getEnvelope ().setPointVector (envelopePointsToCopy);
+    }
 }

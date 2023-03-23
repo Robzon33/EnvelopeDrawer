@@ -29,6 +29,7 @@ public:
     void addPoint(int x, int y);
     void deletePoint(int index);
     juce::OwnedArray<juce::Point<int>>& getPointVector();
+    void setPointVector (juce::OwnedArray<juce::Point<int>>& newPointVector);
     int getIndexOfPoint(int x, int y);
     int getCurrentPosInPix ();
 
