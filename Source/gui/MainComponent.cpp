@@ -114,7 +114,7 @@ int MainComponent::getNewComponentHeight()
 }
 
 void MainComponent::syncWithMain ()
-{
+{/*
     auto* synthVoice = dynamic_cast<SynthVoice*>(synth.getVoice (0));
 
     auto& oscillators = synthVoice->getOscillators ();
@@ -127,5 +127,5 @@ void MainComponent::syncWithMain ()
     {
         auto oscillator = oscillators.getUnchecked (oscillatorIndex);
         oscillator->getEnvelope ().setPointVector (envelopePointsToCopy);
-    }
+    }*/
 }

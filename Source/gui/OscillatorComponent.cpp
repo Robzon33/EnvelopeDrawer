@@ -29,26 +29,9 @@ OscillatorComponent::OscillatorComponent (WavetableOscillator& wto)
 	weightSlider->setValue (wavetableOscillator.getWeight ());
 	weightSlider->addListener (this);
 	addAndMakeVisible (weightSlider.get ());
-
-	durationSlider.reset (new juce::Slider ());
-	durationSlider->setSliderStyle (juce::Slider::LinearBar);
-	durationSlider->setRange (0, 10, 0.01);
-	durationSlider->setValue (wavetableOscillator.getEnvelope ().getDuration ());
-	durationSlider->addListener (this);
-	durationSlider->setTextValueSuffix (" sec");
-	durationSlider->setTooltip ("Define the envelopes duration");
-	addAndMakeVisible (durationSlider.get ());
-
-	sustainPosSlider.reset (new juce::Slider ());
-	sustainPosSlider->setSliderStyle (juce::Slider::LinearBar);
-	sustainPosSlider->setRange (0, 10, 0.01);
-	sustainPosSlider->setValue (wavetableOscillator.getEnvelope ().getSustainPosInSec ());
-	sustainPosSlider->addListener (this);
-	sustainPosSlider->setTextValueSuffix (" sec");
-	addAndMakeVisible (sustainPosSlider.get ());
-
-	envelopeComponent.reset (new EnvelopeComponent (wavetableOscillator.getEnvelope ()));
-	addAndMakeVisible (envelopeComponent.get ());
+    
+    adsrComponent.reset (new AdsrComponent(wavetableOscillator));
+    addAndMakeVisible(adsrComponent.get());
 }
 
 OscillatorComponent::~OscillatorComponent ()
@@ -70,9 +53,7 @@ void OscillatorComponent::resized ()
 	weightSlider->setBounds (sliderArea);
 
 	auto envelopeArea = b.removeFromLeft (500);
-	envelopeComponent->setBounds (envelopeArea.removeFromTop (100));
-	durationSlider->setBounds (envelopeArea.removeFromTop (envelopeArea.getHeight () / 2));
-	sustainPosSlider->setBounds (envelopeArea);
+    adsrComponent->setBounds(envelopeArea);
 }
 
 void OscillatorComponent::sliderValueChanged (juce::Slider* slider)
@@ -84,15 +65,5 @@ void OscillatorComponent::sliderValueChanged (juce::Slider* slider)
 	if (slider == weightSlider.get ())
 	{
 		wavetableOscillator.setWeight (weightSlider->getValue ());
-	}
-	if (slider == durationSlider.get ())
-	{
-		wavetableOscillator.getEnvelope ().setDuration (durationSlider->getValue ());
-		envelopeComponent.get ()->repaint ();
-	}
-	if (slider == sustainPosSlider.get ())
-	{
-		wavetableOscillator.getEnvelope ().setSustainPos (sustainPosSlider->getValue () * 50);
-		envelopeComponent.get ()->repaint ();
 	}
 }

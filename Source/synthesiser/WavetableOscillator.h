@@ -11,7 +11,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "Envelope.h"
 
 class WavetableOscillator
 {
@@ -27,7 +26,13 @@ public:
     void setPitch(float newPitch);
     float getWeight();
     void setWeight(float newWeight);
-    Envelope& getEnvelope();
+    
+    void setAdsrParams(float attack, float decay, float sustain, float release);
+    juce::ADSR adsr;
+    juce::ADSR::Parameters adsrParams;
+    
+    void setAdsrNoteOn();
+    void setAdsrNoteOff();
 private:
     const juce::AudioSampleBuffer& wavetable;
     const int tableSize;
@@ -38,7 +43,7 @@ private:
     float weight;
     double sampleRate;
     double frequency;
-    std::unique_ptr<Envelope> envelope;
+   
 
     void updateTableDelta ();
 };

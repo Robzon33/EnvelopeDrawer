@@ -29,7 +29,7 @@ void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::Synthesiser
         auto* oscillator = oscillators.getUnchecked(oscillatorIndex);
         auto frequency = juce::MidiMessage::getMidiNoteInHertz (midiNoteNumber);
         oscillator->setFrequency (frequency);
-        oscillator->getEnvelope ().noteOn ();
+        oscillator->setAdsrNoteOn();
     }
 }
 
@@ -38,7 +38,7 @@ void SynthVoice::stopNote(float, bool allowTailOff)
     for (auto oscillatorIndex = 0; oscillatorIndex < oscillators.size (); ++oscillatorIndex)
     {
         auto* oscillator = oscillators.getUnchecked (oscillatorIndex);
-        oscillator->getEnvelope ().noteOff ();
+        oscillator->setAdsrNoteOff();
     }
 }
 
@@ -76,7 +76,7 @@ void SynthVoice::setSampleRate(double newSampleRate)
     for (auto oscillatorIndex = 0; oscillatorIndex < oscillators.size (); ++oscillatorIndex)
     {
         auto* oscillator = oscillators.getUnchecked (oscillatorIndex);
-        oscillator->getEnvelope ().setSampleRate (newSampleRate);
+        oscillator->setSampleRate(newSampleRate);
     }
 }
 

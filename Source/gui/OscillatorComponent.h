@@ -12,7 +12,7 @@
 
 #include <JuceHeader.h>
 #include "../synthesiser/WavetableOscillator.h"
-#include "EnvelopeComponent.h"
+#include "AdsrComponent.h"
 
 //==============================================================================
 /*
@@ -27,16 +27,14 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
-    void sliderValueChanged(juce::Slider* slider);
+    void sliderValueChanged(juce::Slider* slider) override;
 private:
     WavetableOscillator& wavetableOscillator;
 
     std::unique_ptr<juce::Slider> pitchSlider;
     std::unique_ptr<juce::Slider> weightSlider;
-    std::unique_ptr<juce::Slider> durationSlider;
-    std::unique_ptr<juce::Slider> sustainPosSlider;
-
-    std::unique_ptr<EnvelopeComponent> envelopeComponent;
+    
+    std::unique_ptr<AdsrComponent> adsrComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscillatorComponent)
 };

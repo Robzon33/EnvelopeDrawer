@@ -10,7 +10,7 @@
 
 #include "WavetableOscillator.h"
 
-WavetableOscillator::WavetableOscillator(const juce::AudioSampleBuffer& wavetableToUse, int harmonic, float weight, double sampleRate)
+WavetableOscillator::WavetableOscillator (const juce::AudioSampleBuffer& wavetableToUse, int harmonic, float weight, double sampleRate)
       : wavetable(wavetableToUse),
         tableSize(wavetable.getNumSamples() - 1)
 {
@@ -19,15 +19,15 @@ WavetableOscillator::WavetableOscillator(const juce::AudioSampleBuffer& wavetabl
     this->pitch = 0;
     this->sampleRate = sampleRate;
     this->frequency = 0;
-
-    envelope.reset(new Envelope(sampleRate));
+    adsr.setSampleRate(sampleRate);
+    setAdsrParams(0.3f, 0.2f, 0.8f, 4.2f);
 }
 
 WavetableOscillator::~WavetableOscillator()
 {
 }
 
-void WavetableOscillator::setFrequency(double newFrequency)
+void WavetableOscillator::setFrequency (double newFrequency)
 {
     frequency = newFrequency;
     updateTableDelta ();
@@ -36,12 +36,14 @@ void WavetableOscillator::setFrequency(double newFrequency)
 void WavetableOscillator::setSampleRate (double newSampleRate)
 {
     sampleRate = newSampleRate;
+    adsr.setSampleRate(newSampleRate);
     updateTableDelta ();
-    envelope.get ()->setSampleRate (sampleRate);
 }
 
 float WavetableOscillator::getNextSample() noexcept
 {
+    adsr.setParameters(adsrParams);
+    
     auto index0 = (unsigned int)currentIndex;
     auto index1 = index0 + 1;
 
@@ -60,9 +62,7 @@ float WavetableOscillator::getNextSample() noexcept
 
     currentSample /= harmonic;
 
-    auto envelopeValue = envelope->getNextSample ();
-
-    currentSample *= envelopeValue;
+    currentSample *= adsr.getNextSample();
 
     return currentSample;
 }
@@ -72,9 +72,10 @@ float WavetableOscillator::getPitch()
     return pitch;
 }
 
-void WavetableOscillator::setPitch(float newPitch)
+void WavetableOscillator::setPitch (float newPitch)
 {
     pitch = newPitch;
+    updateTableDelta();
 }
 
 float WavetableOscillator::getWeight()
@@ -82,17 +83,30 @@ float WavetableOscillator::getWeight()
     return weight;
 }
 
-void WavetableOscillator::setWeight(float newWeight)
+void WavetableOscillator::setWeight (float newWeight)
 {
     weight = newWeight;
 }
 
-Envelope& WavetableOscillator::getEnvelope()
+void WavetableOscillator::setAdsrParams(float attack, float decay, float sustain, float release)
 {
-    return *envelope;
+    adsrParams.attack = attack;
+    adsrParams.decay = decay;
+    adsrParams.sustain = sustain;
+    adsrParams.release = release;
 }
 
-void WavetableOscillator::updateTableDelta ()
+void WavetableOscillator::setAdsrNoteOn()
+{
+    adsr.noteOn();
+}
+
+void WavetableOscillator::setAdsrNoteOff()
+{
+    adsr.noteOff();
+}
+
+void WavetableOscillator::updateTableDelta()
 {
     auto tableSizeOverSampleRate = (float) tableSize / sampleRate;
     auto pitchedFrequency = frequency + (frequency * pitch / 100);
