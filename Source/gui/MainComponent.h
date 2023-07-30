@@ -38,7 +38,7 @@ private:
     const int oscComponentHeight = 150;
 
     void loadData();
-    void addNewOscillatorComponent(WavetableOscillator* oscillator);
+    void addNewOscillatorComponent(int harmonic);
     int getNewComponentHeight();
     void syncWithMain ();
 

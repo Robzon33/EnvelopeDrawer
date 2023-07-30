@@ -62,7 +62,7 @@ void SynthVoice::renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int sta
             currentSample += oscillator->getNextSample();
         }
 
-        for (auto i = outputBuffer.getNumChannels (); --i >= 0;)
+        for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
         {
             outputBuffer.addSample (i, startSample, currentSample);
         }
@@ -82,8 +82,11 @@ void SynthVoice::setSampleRate(double newSampleRate)
 
 void SynthVoice::addHarmonic()
 {
-    auto harmonic = oscillators.size() + 1;
-    oscillators.add(new WavetableOscillator(sineTable, harmonic, defaultHarmonicWeight, getSampleRate()));
+    if(oscillators.size() < maxHarmonics)
+    {
+        auto harmonic = oscillators.size() + 1;
+        oscillators.add(new WavetableOscillator(sineTable, harmonic, defaultHarmonicWeight, getSampleRate()));
+    }
 }
 
 void SynthVoice::deleteHarmonic()
@@ -95,6 +98,29 @@ void SynthVoice::deleteHarmonic()
 juce::OwnedArray<WavetableOscillator>& SynthVoice::getOscillators()
 {
     return oscillators;
+}
+
+void SynthVoice::setAdsrParams(int harmonic, float attack, float decay, float sustain, float release)
+{
+    auto* oscillator = oscillators.getUnchecked (harmonic);
+    oscillator->setAdsrParams(attack, decay, sustain, release);
+}
+
+void SynthVoice::setPitch(int harmonic, float pitch)
+{
+    auto* oscillator = oscillators.getUnchecked(harmonic);
+    oscillator->setPitch(pitch);
+}
+
+void SynthVoice::setWeight(int harmonic, float weight)
+{
+    auto* oscillator = oscillators.getUnchecked(harmonic);
+    oscillator->setWeight(weight);
+}
+
+int SynthVoice::getNumberOfHarmonics()
+{
+    return oscillators.size() - 1;
 }
 
 void SynthVoice::createWavetable()

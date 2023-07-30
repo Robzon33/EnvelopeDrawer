@@ -12,13 +12,17 @@
 #include "AdsrComponent.h"
 
 //==============================================================================
-AdsrComponent::AdsrComponent(WavetableOscillator& wto)
-: wavetableOscillator(wto)
+AdsrComponent::AdsrComponent(Synth& s, int harmonic)
+: synth(s)
 {
+    this->harmonic = harmonic;
+    
+    juce::ADSR::Parameters params = synth.getAdsrParams(harmonic);
+    
     attackSlider.reset(new juce::Slider());
     attackSlider->setSliderStyle(juce::Slider::LinearVertical);
     attackSlider->setRange(0, 5, 0.05);
-    attackSlider->setValue(wavetableOscillator.adsrParams.attack);
+    attackSlider->setValue(params.attack);
     attackSlider->setTextValueSuffix(" s");
     attackSlider->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
     attackSlider->addListener(this);
@@ -27,7 +31,7 @@ AdsrComponent::AdsrComponent(WavetableOscillator& wto)
     decaySlider.reset(new juce::Slider());
     decaySlider->setSliderStyle(juce::Slider::LinearVertical);
     decaySlider->setRange(0, 5, 0.05);
-    decaySlider->setValue(wavetableOscillator.adsrParams.decay);
+    decaySlider->setValue(params.decay);
     decaySlider->setTextValueSuffix(" s");
     decaySlider->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
     decaySlider->addListener(this);
@@ -36,7 +40,7 @@ AdsrComponent::AdsrComponent(WavetableOscillator& wto)
     sustainSlider.reset(new juce::Slider());
     sustainSlider->setSliderStyle(juce::Slider::LinearVertical);
     sustainSlider->setRange(0, 1, 0.05);
-    sustainSlider->setValue(wavetableOscillator.adsrParams.sustain);
+    sustainSlider->setValue(params.sustain);
     sustainSlider->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
     sustainSlider->addListener(this);
     addAndMakeVisible(sustainSlider.get());
@@ -44,7 +48,7 @@ AdsrComponent::AdsrComponent(WavetableOscillator& wto)
     releaseSlider.reset(new juce::Slider());
     releaseSlider->setSliderStyle(juce::Slider::LinearVertical);
     releaseSlider->setRange(0, 5, 0.05);
-    releaseSlider->setValue(wavetableOscillator.adsrParams.release);
+    releaseSlider->setValue(params.release);
     releaseSlider->setTextValueSuffix(" s");
     releaseSlider->setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
     releaseSlider->addListener(this);
@@ -79,9 +83,10 @@ void AdsrComponent::sliderValueChanged(juce::Slider* slider)
     if (slider == attackSlider.get() || slider == decaySlider.get()
         || slider == sustainSlider.get() || slider == releaseSlider.get())
     {
-        wavetableOscillator.setAdsrParams(attackSlider->getValue(),
-                                          decaySlider->getValue(),
-                                          sustainSlider->getValue(),
-                                          releaseSlider->getValue());
+        synth.setAdsrParams(this->harmonic,
+                            attackSlider->getValue(),
+                            decaySlider->getValue(),
+                            sustainSlider->getValue(),
+                            releaseSlider->getValue());
     }
 }

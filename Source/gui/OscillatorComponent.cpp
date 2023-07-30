@@ -12,13 +12,15 @@
 #include "OscillatorComponent.h"
 
 //==============================================================================
-OscillatorComponent::OscillatorComponent (WavetableOscillator& wto)
-	: wavetableOscillator (wto)
+OscillatorComponent::OscillatorComponent (Synth& s, int harmonic)
+	: synth (s)
 {
+    this->harmonic = harmonic;
+    
 	pitchSlider.reset (new juce::Slider ());
 	pitchSlider->setSliderStyle (juce::Slider::LinearVertical);
 	pitchSlider->setRange (-10, 10, 0.1);
-	pitchSlider->setValue (wavetableOscillator.getPitch ());
+	pitchSlider->setValue (synth.getPitch(harmonic));
 	pitchSlider->setTextValueSuffix (" %");
 	pitchSlider->addListener (this);
 	addAndMakeVisible (pitchSlider.get ());
@@ -26,11 +28,11 @@ OscillatorComponent::OscillatorComponent (WavetableOscillator& wto)
 	weightSlider.reset (new juce::Slider ());
 	weightSlider->setSliderStyle (juce::Slider::LinearVertical);
 	weightSlider->setRange (0, 1.0, 0.01);
-	weightSlider->setValue (wavetableOscillator.getWeight ());
+	weightSlider->setValue (synth.getWeight(harmonic));
 	weightSlider->addListener (this);
 	addAndMakeVisible (weightSlider.get ());
     
-    adsrComponent.reset (new AdsrComponent(wavetableOscillator));
+    adsrComponent.reset (new AdsrComponent(synth, this->harmonic));
     addAndMakeVisible(adsrComponent.get());
 }
 
@@ -60,10 +62,10 @@ void OscillatorComponent::sliderValueChanged (juce::Slider* slider)
 {
 	if (slider == pitchSlider.get ())
 	{
-		wavetableOscillator.setPitch (pitchSlider->getValue ());
+        synth.setPitch(this->harmonic, pitchSlider->getValue());
 	}
 	if (slider == weightSlider.get ())
 	{
-		wavetableOscillator.setWeight (weightSlider->getValue ());
+        synth.setWeight(this->harmonic, weightSlider->getValue());
 	}
 }

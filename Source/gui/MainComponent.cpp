@@ -57,24 +57,22 @@ void MainComponent::resized()
 
 void MainComponent::buttonClicked(juce::Button* button)
 {
-    auto* synthVoice = dynamic_cast<SynthVoice*>(synth.getVoice(0));
-
     if (button == addOscButton.get())
     {
-        synthVoice->addHarmonic();
-
-        auto& oscillators = synthVoice->getOscillators();
-        auto oscillator = oscillators.getUnchecked(oscillators.size() - 1);
-        addNewOscillatorComponent(oscillator);
+        if (synth.addHarmonic())
+        {
+            addNewOscillatorComponent(synth.getNumberOfVoicesHarmonics());
+        }
     }
     if (button == deleteOscButton.get())
     {
-        synthVoice->deleteHarmonic();
+        if (synth.deleteHarmonic())
+        {
+            if (oscComponents.size() > 1)
+                oscComponents.removeLast();
 
-		if (oscComponents.size() > 1)
-			oscComponents.removeLast();
-
-        setSize(getWidth(), getNewComponentHeight());
+            setSize(getWidth(), getNewComponentHeight());
+        }
     }
     if (button == syncToggleButton.get ())
     {
@@ -88,21 +86,19 @@ void MainComponent::loadData()
     {
         oscComponents.clear(true);
     }
-
-    auto* synthVoice = dynamic_cast<SynthVoice*>(synth.getVoice(0));
-
-    auto& oscillators = synthVoice->getOscillators();
-
-    for (auto oscillatorIndex = 0; oscillatorIndex < oscillators.size(); ++oscillatorIndex)
+    
+    //check how many oscillators we have in total and add osc components for each osc.
+    auto numberOfOsc = synth.getNumberOfVoicesHarmonics() + 1;
+    
+    for(auto i = 0; i < numberOfOsc; i++)
     {
-        auto oscillator = oscillators.getUnchecked(oscillatorIndex);      
-        addNewOscillatorComponent(oscillator);
+        addNewOscillatorComponent(i);
     }
 }
 
-void MainComponent::addNewOscillatorComponent(WavetableOscillator* oscillator)
+void MainComponent::addNewOscillatorComponent(int harmonic)
 {
-    OscillatorComponent* newComponent = new OscillatorComponent(*oscillator);
+    OscillatorComponent* newComponent = new OscillatorComponent(synth, harmonic);
     oscComponents.add(newComponent);
     addAndMakeVisible(newComponent);
     setSize(getWidth(), getNewComponentHeight());

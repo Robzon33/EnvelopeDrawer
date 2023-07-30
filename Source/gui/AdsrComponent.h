@@ -11,7 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "../synthesiser/WavetableOscillator.h"
+#include "../synthesiser/Synth.h"
 
 //==============================================================================
 /*
@@ -20,7 +20,7 @@ class AdsrComponent  :  public juce::Component,
                         public juce::Slider::Listener
 {
 public:
-    AdsrComponent(WavetableOscillator& wto);
+    AdsrComponent(Synth& s, int harmonic);
     ~AdsrComponent() override;
 
     void paint (juce::Graphics&) override;
@@ -28,7 +28,8 @@ public:
 
     void sliderValueChanged(juce::Slider* slider) override;
 private:
-    WavetableOscillator& wavetableOscillator;
+    Synth& synth;
+    int harmonic;
     
     std::unique_ptr<juce::Slider> attackSlider;
     std::unique_ptr<juce::Slider> decaySlider;
